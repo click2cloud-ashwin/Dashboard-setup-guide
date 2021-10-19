@@ -2,7 +2,7 @@
 
 ####################
 
-echo Setup: Enlist Dashboard
+echo "Setup: Enlist Dashboard"
 
 cd ~
 git clone https://github.com/Click2Cloud-Centaurus/dashboard.git
@@ -14,7 +14,7 @@ export GO111MODULE=on
 
 ####################
 
-echo Enlisting nvm packages
+echo "Enlisting nvm packages"
 
 export NVM_DIR="$HOME/.nvm" && (
   git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
@@ -51,20 +51,30 @@ else
   npm ci
 fi
 
+####################
 
-#for certificates
+# For certificates generations
+
+cd ~
 mkdir certs
 cd certs
 openssl genrsa -out dashboard.key 2048
 openssl rsa -in dashboard.key -out dashboard.key
-openssl req -sha256 -new -key dashboard.key -out dashboard.csr -subj '/CN=IP_OF_VM'
+openssl req -sha256 -new -key dashboard.key -out dashboard.csr -subj '/CN="$(hostname -i)"'
 openssl x509 -req -sha256 -days 365 -in dashboard.csr -signkey dashboard.key -out dashboard.crt
-#for service account and set credentials
+
+####################
+
+# for service account and set credentials
+
+cd ~
 kubectl create namespace kubernetes-dashboard
 kubectl create secret generic kubernetes-dashboard-certs --from-file=./certs/dashboard.key --from-file=./certs/dashboard.crt -n kubernetes-dashboard
 kubectl create -f dashboard-admin.yaml
 kubectl create serviceaccount dashboard-admin -n kube-system
 kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
 kubectl describe secrets -n kube-system $(kubectl -n kube-system get secret | awk '/dashboard-admin/{print $1}')Extra Dependancies
+
+echo "Dashboard setup Done"
 
 
