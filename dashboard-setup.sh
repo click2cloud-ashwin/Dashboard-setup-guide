@@ -109,5 +109,3 @@ echo "Starting Dashboard"
 
 cd ~/dashboard
 npm run start:https --kubernetes-dashboard:kubeconfig=/root/.kube/config
-
-
