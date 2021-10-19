@@ -4,7 +4,7 @@
 
 echo "Setup: Enlist Dashboard"
 
-cd ~
+cd ~ || exit
 git clone https://github.com/Click2Cloud-Centaurus/dashboard.git
 
 ####################
@@ -19,16 +19,16 @@ echo "Enlisting nvm packages"
 export NVM_DIR="$HOME/.nvm" && (
   git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
   cd "$NVM_DIR"
-  git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+  git checkout "git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)"
 ) && \. "$NVM_DIR/nvm.sh"
 
 
-echo "export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+echo 'export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"           # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-" >> "~/.bashrc"
+' >> "$HOME/.bashrc"
 
-source  ~/.profile
+source  "$HOME"/.profile
 
 ####################
 
@@ -44,7 +44,7 @@ npm install --global gulp
 
 ####################
 
-cd ~/dashboard/
+cd ~/dashboard/ || exit
 if [ "$(whoami)" == "root" ]; then
   npm ci --unsafe-perm
 else
@@ -55,26 +55,25 @@ fi
 
 # For certificates generations
 
-cd ~
+cd ~ || exit
 mkdir certs
-cd certs
+cd certs || exit
 openssl genrsa -out dashboard.key 2048
 openssl rsa -in dashboard.key -out dashboard.key
-openssl req -sha256 -new -key dashboard.key -out dashboard.csr -subj '/CN="$(hostname -i)"'
+openssl req -sha256 -new -key dashboard.key -out dashboard.csr -subj "/CN=$(hostname -i)"
 openssl x509 -req -sha256 -days 365 -in dashboard.csr -signkey dashboard.key -out dashboard.crt
 
 ####################
 
 # for service account and set credentials
 
-cd ~
+cd ~ || exit
 kubectl create namespace kubernetes-dashboard
 kubectl create secret generic kubernetes-dashboard-certs --from-file=./certs/dashboard.key --from-file=./certs/dashboard.crt -n kubernetes-dashboard
 kubectl create -f dashboard-admin.yaml
 kubectl create serviceaccount dashboard-admin -n kube-system
 kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
-kubectl describe secrets -n kube-system $(kubectl -n kube-system get secret | awk '/dashboard-admin/{print $1}')Extra Dependancies
+kubectl describe secrets -n kube-system "$(kubectl -n kube-system get secret | awk '/dashboard-admin/{print $1}')"
 
 echo "Dashboard setup Done"
-
 
