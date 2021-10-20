@@ -47,10 +47,10 @@ source   "$HOME/.profile"
 ####################
 
 echo Setup: Install NVM packages
-nvm install 12
-apt install nodejs -y
-apt install npm -y
-apt install build-essential ruby-full node-typescript -y
+sudo nvm install 12
+sudo apt install nodejs -y
+sudo apt install npm -y
+sudo apt install build-essential ruby-full node-typescript -y
 npm install --global typescript
 npm install --global gulp-cli
 npm install --global gulp
@@ -99,7 +99,7 @@ kubectl apply -f dashboard-admin.yaml
 kubectl create serviceaccount dashboard-admin -n kube-system
 kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
 kubectl describe secrets -n kube-system "$(kubectl -n kube-system get secret | awk '/dashboard-admin/{print $1}')"
-sudo ln -snf /var/run/kubernetes/admin.kubeconfig  /root/.kube/config
+sudo ln -snf /var/run/kubernetes/admin.kubeconfig  "$HOME"/.kube/config
 
 echo Setup: Dashboard setup Completed!
 
@@ -108,4 +108,4 @@ echo Setup: Dashboard setup Completed!
 echo "Starting Dashboard"
 
 cd ~/dashboard
-npm run start:https --kubernetes-dashboard:kubeconfig=/root/.kube/config
+npm run start:https --kubernetes-dashboard:kubeconfig="$HOME"/.kube/config
