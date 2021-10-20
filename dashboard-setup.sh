@@ -21,7 +21,8 @@ cd ~
 git clone https://github.com/Click2Cloud-Centaurus/dashboard.git
 
 ####################
-echo "Export go module"
+
+echo Setup: Export go module
 
 export GO111MODULE=on
 
@@ -41,16 +42,15 @@ echo 'NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 ' >> "$HOME/.bashrc"
 
-source  "$HOME"/.profile
+source   "$HOME/.profile"
 
 ####################
 
 echo Setup: Install NVM packages
-
-sudo nvm install 12
-sudo apt install nodejs -y
-sudo apt install npm -y
-sudo apt install build-essential ruby-full node-typescript -y
+nvm install 12
+apt install nodejs -y
+apt install npm -y
+apt install build-essential ruby-full node-typescript -y
 npm install --global typescript
 npm install --global gulp-cli
 npm install --global gulp
