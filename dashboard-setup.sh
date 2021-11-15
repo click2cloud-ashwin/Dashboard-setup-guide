@@ -47,7 +47,7 @@ source   "$HOME/.profile"
 ####################
 
 echo Setup: Install NVM packages
-sudo nvm install 12
+nvm install 12
 sudo apt install nodejs -y
 sudo apt install npm -y
 sudo apt install build-essential ruby-full node-typescript -y
@@ -105,7 +105,3 @@ echo Setup: Dashboard setup Completed!
 
 ####################
 
-echo "Starting Dashboard"
-
-cd ~/dashboard
-npm run start:https --kubernetes-dashboard:kubeconfig="$HOME"/.kube/config
